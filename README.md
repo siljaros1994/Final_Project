@@ -8,6 +8,8 @@
 
 This project is an interactive BB84 quantum key distribution example that teaches users how quantum physics protects communication, where users play as Eve the eavesdropper and try to intercept Alice and Bob's quantum transmission without being detected!
 
+![BB84 Simulation Preview](img/BB84_render.png)
+
 ### What is BB84?
 The BB84 protocol enables two parties to create a secret key using quantum principles. Alice encodes bits in photon polarization, Bob measures them, and they can detect any eavesdropping by Eve through quantum disturbances in the communication.
 
@@ -31,3 +33,8 @@ This project includes:
 ## Deployment
 
 This website will be deployed on **Render** for easy public access. The project uses only static HTML, CSS, and JavaScript - no backend required!
+
+🌐 **Live Demo**: [https://final-project-agd6.onrender.com](https://final-project-agd6.onrender.com)
+
+
+
