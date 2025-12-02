@@ -1,0 +1,1476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BB84 Interactive Simulation</title>
+    <meta name="description" content="Interactive BB84 quantum key distribution protocol simulation">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo"><img src="img/cryptography.png" alt="Quantum Key" style="height: 60px;"></div>
+            <ul class="nav_links">
+                <li><a href="index.html">About</a></li>
+                <li><a href="simulation.html">Simulation</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="quantum_card">
+            <div class="card_content">
+                <div class="research_badge">Interactive BB84 Protocol Simulator</div>
+                <h1>Mission: Quantum Interception</h1>
+                <p class="tagline">Your Goal: Steal The Quantum Key Undetected!!!</p>
+                <p style="color: #b0b0d0; margin: 20px 0; font-size: 1.4em; font-weight: bold">
+                    Can you eavesdrop on Alice and Bob's quantum communication? As Eve the eavesdropper, intercept Alice and Bob's quantum transmission. Guess their encryption bases and steal their secret key without being discovered. If Alice and Bob noticing your presence, you fail the mission!
+                </p>
+            </div>
+        </div>
+    </section>
+    
+    <div class="eve_toggle">
+        <div class="eve_instruction">Choose Eve's status:</div>
+        <button class="eve_on" id="eve_on_btn">EVE ACTIVE 🟢</button>
+        <button class="eve_off" id="eve_off_btn">EVE INACTIVE 🔴</button>
+        <div class="eve_warning" id="eve_warning" style="display: none;">⚠️ Please select Eve's status to start simulation</div>
+    </div>
+
+    <div class="step_indicator">
+        <div class="step active" id="step_setup" onclick="goToStep('setup')">Setup</div>
+        <div class="step" id="step_eve" onclick="goToStep('eve')">Eve's Strategy</div>
+        <div class="step" id="step_sift" onclick="goToStep('sift')">Sifting</div>
+        <div class="step" id="step_transmit" onclick="goToStep('transmit')">Transmission</div>
+        <div class="step" id="step_detect" onclick="goToStep('detect')">Detection</div>
+        <div class="step" id="step_results" onclick="goToStep('results')">Results</div>
+    </div>
+
+    <div class="game_section" id="game_settings">
+        <h2 class="section_title">Setup</h2>
+
+        <div class="explanation">
+            <strong>How The BB84 Protocol Works:</strong> Photons are used to encode the secret bits that Alice sends. They are measured by Bob.
+             As long as they use the same measurement basis, the bit will match. As soon as Eve tries to intercept, she creates errors that Alice and Bob are able to detect. <br> 
+            <br>
+             If Alice and Bob detect errors, they know Eve has intercepted the communication.  
+             As a result, they can discard the compromised bits. Using this method, they can protect their communication, making eavesdropping difficult.
+        </div>
+
+        <div class="explanation">
+            <strong>Note:</strong> More photons means longer key but easier to detect eavesdropping while fewer photons means shorter key but harder to detect Eve.
+        </div>
+
+        <div class="slider_container">
+            <label for="num_photons">Number of Photons:</label>
+            <input type="range" id="num_photons" min="3" max="12" value="3" step="1">
+            <span class="slider_value" id="photons_value">3</span>
+        </div>
+
+        <div class="slider_container">
+            <label for="max_revealed">Max Bits Revealed:</label>
+            <input type="range" id="max_revealed" min="1" max="12" value="1" step="1">
+            <span class="slider_value" id="revealed_value">1</span>
+        </div>
+
+        <div class="explanation">
+            <strong>Setup the Quantum Channel:</strong>
+            Configure what Alice transmits and how Bob receives it by setting their bits and bases.
+        </div>
+
+        <table class="game_table" id="setup_table">
+            <thead>
+                <tr>
+                    <th>Setup</th>
+                    <th id="photon_1">1</th>
+                    <th id="photon_2">2</th>
+                    <th id="photon_3">3</th>
+                    <th id="photon_4">4</th>
+                    <th id="photon_5">5</th>
+                    <th id="photon_6">6</th>
+                    <th id="photon_7">7</th>
+                    <th id="photon_8">8</th>
+                    <th id="photon_9" style="display: none;">9</th>
+                    <th id="photon_10" style="display: none;">10</th>
+                    <th id="photon_11" style="display: none;">11</th>
+                    <th id="photon_12" style="display: none;">12</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Alice's key</strong></td>
+                    <td><button class="bit_button" onclick="toggleBit(this, 0, 'alice_bits')">0</button></td>
+                    <td><button class="bit_button" onclick="toggleBit(this, 1, 'alice_bits')">0</button></td>
+                    <td><button class="bit_button" onclick="toggleBit(this, 2, 'alice_bits')">0</button></td>
+                    <td><button class="bit_button" onclick="toggleBit(this, 3, 'alice_bits')">0</button></td>
+                    <td><button class="bit_button" onclick="toggleBit(this, 4, 'alice_bits')">0</button></td>
+                    <td><button class="bit_button" onclick="toggleBit(this, 5, 'alice_bits')">0</button></td>
+                    <td><button class="bit_button" onclick="toggleBit(this, 6, 'alice_bits')">0</button></td>
+                    <td><button class="bit_button" onclick="toggleBit(this, 7, 'alice_bits')">0</button></td>
+                    <td style="display: none;"><button class="bit_button" onclick="toggleBit(this, 8, 'alice_bits')">0</button></td>
+                    <td style="display: none;"><button class="bit_button" onclick="toggleBit(this, 9, 'alice_bits')">0</button></td>
+                    <td style="display: none;"><button class="bit_button" onclick="toggleBit(this, 10, 'alice_bits')">0</button></td>
+                    <td style="display: none;"><button class="bit_button" onclick="toggleBit(this, 11, 'alice_bits')">0</button></td>
+                </tr>
+                <tr>
+                    <td><strong>Alice's bases</strong></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 0, 'alice_bases')">R</button></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 1, 'alice_bases')">R</button></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 2, 'alice_bases')">R</button></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 3, 'alice_bases')">R</button></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 4, 'alice_bases')">R</button></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 5, 'alice_bases')">R</button></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 6, 'alice_bases')">R</button></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 7, 'alice_bases')">R</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="toggleBasis(this, 8, 'alice_bases')">R</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="toggleBasis(this, 9, 'alice_bases')">R</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="toggleBasis(this, 10, 'alice_bases')">R</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="toggleBasis(this, 11, 'alice_bases')">R</button></td>
+                </tr>
+                <tr>
+                    <td><strong>Bob's bases</strong></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 0, 'bob_bases')">R</button></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 1, 'bob_bases')">R</button></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 2, 'bob_bases')">R</button></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 3, 'bob_bases')">R</button></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 4, 'bob_bases')">R</button></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 5, 'bob_bases')">R</button></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 6, 'bob_bases')">R</button></td>
+                    <td><button class="basis_button" onclick="toggleBasis(this, 7, 'bob_bases')">R</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="toggleBasis(this, 8, 'bob_bases')">R</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="toggleBasis(this, 9, 'bob_bases')">R</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="toggleBasis(this, 10, 'bob_bases')">R</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="toggleBasis(this, 11, 'bob_bases')">R</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="cta_button" onclick="runSimulation()">Start Simulation</button>
+        </div>
+    </div>
+
+    <div class="game_section" id="eve_section" style="display: none;">
+        <h2 class="section_title">Basis Selection</h2>
+
+        <div class="explanation">
+            <strong>Quantum Eavesdropping:</strong><br>
+            As Eve, your goal is to intercept Alice's message without disturbing the quantum states.
+            Alice is going to send <span id="photon_count">8</span> photons using rectilinear (↔/↕) or diagonal (↗/↖) polarization at random.<br><br>
+            You will need to guess which basis, R or D that you think Alice used for each photon. Guessing correctly allows you to measure the photon without disturbing it,
+             if you guess wrong, you risk introducing errors that Alice and Bob can detect. Choose your measurement bases wisely!
+        </div>
+
+        <table class="game_table" id="eve_table">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th id="eve_photon_1">1</th>
+                    <th id="eve_photon_2">2</th>
+                    <th id="eve_photon_3">3</th>
+                    <th id="eve_photon_4">4</th>
+                    <th id="eve_photon_5">5</th>
+                    <th id="eve_photon_6">6</th>
+                    <th id="eve_photon_7">7</th>
+                    <th id="eve_photon_8">8</th>
+                    <th id="eve_photon_9" style="display: none;">9</th>
+                    <th id="eve_photon_10" style="display: none;">10</th>
+                    <th id="eve_photon_11" style="display: none;">11</th>
+                    <th id="eve_photon_12" style="display: none;">12</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>R</strong></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(0, 0)">Select</button></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(1, 0)">Select</button></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(2, 0)">Select</button></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(3, 0)">Select</button></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(4, 0)">Select</button></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(5, 0)">Select</button></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(6, 0)">Select</button></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(7, 0)">Select</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="selectEveBasis(8, 0)">Select</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="selectEveBasis(9, 0)">Select</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="selectEveBasis(10, 0)">Select</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="selectEveBasis(11, 0)">Select</button></td>
+                </tr>
+                <tr>
+                    <td><strong>D</strong></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(0, 1)">Select</button></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(1, 1)">Select</button></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(2, 1)">Select</button></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(3, 1)">Select</button></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(4, 1)">Select</button></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(5, 1)">Select</button></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(6, 1)">Select</button></td>
+                    <td><button class="basis_button" onclick="selectEveBasis(7, 1)">Select</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="selectEveBasis(8, 1)">Select</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="selectEveBasis(9, 1)">Select</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="selectEveBasis(10, 1)">Select</button></td>
+                    <td style="display: none;"><button class="basis_button" onclick="selectEveBasis(11, 1)">Select</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="cta_button" onclick="eveIntercept()">Submit</button>
+        </div>
+    </div>
+
+    <div class="game_section" id="receiving_data" style="display: none;">
+        <h2 class="section_title">Receiving the data</h2>
+
+        <div class="explanation">
+            <strong>Your Eavesdropping Results:</strong><br>
+            You've intercepted Alice's quantum transmission using your chosen measurement bases. 
+            The table below shows what bits you successfully measured for each photon.<br><br>
+
+            <strong>Why Quantum Measurement Matters:</strong><br>
+            In quantum mechanics, measuring a photon fundamentally changes its state.<br><br>
+
+            <strong>Quantum Behavior:</strong><br>
+            <strong>Perfect interception</strong>: When your basis matches Alice's, you read her bit exactly and the photon continues unchanged to Bob<br>
+            <strong>Imperfect interception</strong>: When your basis differs from Alice's, you get a random bit and disturb the photon, potentially alerting Bob and Alice of your presence.<br><br>
+        </div>
+
+        <table class="game_table" id="receiving_table">
+            <thead>
+                <tr>
+                    <th>Photons</th>
+                    <th id="recv_photon_1">1</th>
+                    <th id="recv_photon_2">2</th>
+                    <th id="recv_photon_3">3</th>
+                    <th id="recv_photon_4">4</th>
+                    <th id="recv_photon_5">5</th>
+                    <th id="recv_photon_6">6</th>
+                    <th id="recv_photon_7">7</th>
+                    <th id="recv_photon_8">8</th>
+                    <th id="recv_photon_9" style="display: none;">9</th>
+                    <th id="recv_photon_10" style="display: none;">10</th>
+                    <th id="recv_photon_11" style="display: none;">11</th>
+                    <th id="recv_photon_12" style="display: none;">12</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Bit</strong></td>
+                    <td id="recv_bit_1">-</td>
+                    <td id="recv_bit_2">-</td>
+                    <td id="recv_bit_3">-</td>
+                    <td id="recv_bit_4">-</td>
+                    <td id="recv_bit_5">-</td>
+                    <td id="recv_bit_6">-</td>
+                    <td id="recv_bit_7">-</td>
+                    <td id="recv_bit_8">-</td>
+                    <td id="recv_bit_9" style="display: none;">-</td>
+                    <td id="recv_bit_10" style="display: none;">-</td>
+                    <td id="recv_bit_11" style="display: none;">-</td>
+                    <td id="recv_bit_12" style="display: none;">-</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="cta_button" onclick="proceedToSifting()">Continue to Sifting</button>
+        </div>
+    </div>
+
+<div class="game_section" id="transmission_results" style="display: none;">
+    <h2 class="section_title">Quantum Transmission Complete</h2>
+
+    <div class="explanation">
+        <strong>Transmission Results:</strong> The quantum communication is complete! 
+        Alice sent her encoded photons to Bob through insecure quantum channel and Bob measured them using his chosen bases and Alice publicly announced which bases she used. <br><br>
+        <strong>Note:</strong>
+        If Eve was active, she intercepted and measured the photons before forwarding them to Bob and if not, Bob received them directly from Alice. 
+        <span id="eve_status_text"></span>
+        <br><br>
+        Now, let's see how the transmission went, the table below shows the complete transmission details and measurement outcomes.
+    </div>
+
+    <table class="game_table" id="transmission_table">
+    <thead>
+        <tr>
+            <th>Photon</th>
+            <th>Alice's Bit</th>
+            <th>Alice's Basis</th>
+            <th id="eve_bit_header" style="display: none;">Eve's Bit</th>
+            <th>Bob's Bit</th>
+            <th>Bob's Basis</th>
+            <th>Polarization</th>
+            <th>Results</th>
+        </tr>
+    </thead>
+    <tbody id="transmission_tbody">
+    </tbody>
+    </table>
+
+    <div style="text-align: center; margin-top: 30px;">
+        <button class="cta_button" onclick="proceedToDetection()">Continue to Detection</button>
+    </div>
+</div>
+
+    <div class="game_section" id="sifting" style="display: none;">
+        <h2 class="section_title">Sifting Phase</h2>
+
+        <div class="explanation">
+            <strong>Your Eavesdropping Performance:</strong> Alice and Bob now publicly compare their measurement bases to each other. 
+            They keep only the bits where their bases matched, creating a sifted or secret key. If bits do not match, they are discarded. <br>
+            As Eve, your goal is to have as many bits in the sifted key as possible while minimizing errors to avoid detection. 
+        </div>
+
+        <table class="game_table" id="sifting_table">
+            <thead>
+                <tr>
+                    <th>Sifting</th>
+                    <th id="sift_photon_1">1</th>
+                    <th id="sift_photon_2">2</th>
+                    <th id="sift_photon_3">3</th>
+                    <th id="sift_photon_4" style="display: none;">4</th>
+                    <th id="sift_photon_5" style="display: none;">5</th>
+                    <th id="sift_photon_6" style="display: none;">6</th>
+                    <th id="sift_photon_7" style="display: none;">7</th>
+                    <th id="sift_photon_8" style="display: none;">8</th>
+                    <th id="sift_photon_9" style="display: none;">9</th>
+                    <th id="sift_photon_10" style="display: none;">10</th>
+                    <th id="sift_photon_11" style="display: none;">11</th>
+                    <th id="sift_photon_12" style="display: none;">12</th>
+                </tr>
+            </thead>
+            <tbody id="sifting_tbody">
+            </tbody>
+        </table>
+
+        <div class="sifting_explanation">
+            <h3>How Sifting Works and Eve's Interception Result:</h3>
+            <div class="explanation_content">
+                <div class="sifting_rule">
+                    <h4>Sifting Rules:</h4>
+                    <p><strong>If Alice's and Bob's bases are equal, then the bit is kept for the secret, sifted key.</strong></p>
+                    <p><strong>If Alice's and Bob's bases are not equal, then the bit is discarded, since diffrent measurement is unreliable.</strong></p>
+                </div>
+                
+                <div class="eve_measurement_certainty">
+                    <h4>Eve's Measurement Accuracy</h4>
+                    <p><strong>Correct Basis Guess:</strong> You intercepted Alice's exact bit without error.</p>
+                    <p><strong>Wrong Basis Guess:</strong> You got a random result and may have created detectable errors.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="eve_certainty_table_section" id="eve_certainty_section" style="display: none;">
+            <h3>Your Measurement Analysis</h3>
+            <table class="game_table" id="eve_certainty_table">
+                <thead>
+                    <tr>
+                        <th>Analysis</th>
+                        <th id="certainty_photon_1">1</th>
+                        <th id="certainty_photon_2">2</th>
+                        <th id="certainty_photon_3">3</th>
+                        <th id="certainty_photon_4">4</th>
+                        <th id="certainty_photon_5">5</th>
+                        <th id="certainty_photon_6">6</th>
+                        <th id="certainty_photon_7">7</th>
+                        <th id="certainty_photon_8">8</th>
+                        <th id="certainty_photon_9" style="display: none;">9</th>
+                        <th id="certainty_photon_10" style="display: none;">10</th>
+                        <th id="certainty_photon_11" style="display: none;">11</th>
+                        <th id="certainty_photon_12" style="display: none;">12</th>
+                    </tr>
+                </thead>
+                <tbody id="eve_certainty_tbody">
+                </tbody>
+            </table>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="cta_button" onclick="showTransmission()">Continue to Transmission</button>
+        </div>
+    </div>
+
+    <div class="game_section" id="detection" style="display: none;">
+        <h2 class="section_title">Eavesdropper Detection</h2>
+
+        <div class="explanation">
+            <strong>Security Check For Eavesdropping:</strong> 
+            For this part you are Alice instead of Eve and it is time to check if Eve has been eavesdropping on your communication and if your quantum communication with Bob was secure or not.<br>
+            So now you and Bob will publicly compare some bits from your sifted key to look for any errors that might indicate eavesdropping.<br> <br>
+            
+            Now pick which bits to compare, the right selection can help you catch if Eve was listening. <br><br>
+        </div>
+
+        <div class="bit_selection" id="bit_selection_section">
+            <h3>Compare Bits for Security Check:</h3>
+            <p>After sifting, there are <span id="sifted_count">0</span> bits remaining in the sifted key. Select <span id="reveal_count">1</span> bits to publicly compare with Bob for eavesdropping detection.</p>
+
+            <div class="selection_tip">
+                <strong>Tip:</strong> with more bits revealed, you get better security check, but shorter final key.
+            </div>
+
+            <table class="game_table" id="bit_selection_table">
+                <thead>
+                    <tr>
+                        <th>Select</th>
+                        <th>Index</th>
+                        <th>Alice's Bit</th>
+                        <th>Bob's Bit</th>
+                    </tr>
+                </thead>
+                <tbody id="bit_selection_tbody">
+                </tbody>
+            </table>
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="cta_button" onclick="revealSelectedBits()">Reveal Selected Bits</button>
+            </div>
+        </div>
+
+        <div class="public_comparison" id="public_comparison_section" style="display: none;">
+            <h3>Public Comparison of The Selected Positions</h3>
+            <table class="game_table" id="public_comparison_table">
+                <thead>
+                    <tr>
+                        <th>Index</th>
+                        <th> Alice's Bit</th>
+                        <th>Bob's Bit</th>
+                        <th>Eve's Base</th>
+                        <th>Eve's Bit</th>
+                    </tr>
+                </thead>
+                <tbody id="public_comparison_tbody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="detection_results" id="detection_results_section" style="display: none;">
+            <h3>The Detection Results:</h3>
+            <p><strong> Number of Errors detected:</strong> <span id="errors_count">0</span></p>
+            <p><strong>The Error Rate Was:</strong> <span id="error_rate_display">0%</span></p>
+            <div class="outcome_message" id="detection_outcome">
+                <div id="detection_content"></div>
+            </div>
+        </div>
+
+        <div class="final_key_summary" id="final_key_section" style="display: none;">
+            <h3>Final Shared Key</h3>
+            <div class="key_display" id="final_shared_key_display">100</div>
+            <p id="final_key_description">This is the remaining bits form the secret key that Alice and Bob can use for secure communication.</p>
+        </div>
+
+        <div class="outcome_message" id="outcome_message" style="display: none;">
+            <div id="outcome_content"></div>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="cta_button" onclick="showFinalResults()">View Complete Transmission</button>
+        </div>
+    </div>
+
+    <div class="game_section" id="final_results" style="display: none;">
+        <h2 class="section_title">Complete Communication Breakdown</h2>
+
+        <div class="explanation">
+            <strong>Final Analysis:</strong> Here's the complete picture of what happened during this quantum key exchange.
+            Every photon, every measurement, and every decision is laid out for analysis.
+        </div>
+
+        <table class="game_table" id="final_table">
+            <tbody id="final_tbody">
+            </tbody>
+        </table>
+
+        <div class="results_summary">
+            <h3>Final Private Key</h3>
+            <div class="key_display" id="final_key_display"></div>
+            <p><strong>Key successfully established:</strong> <span id="key_success">Yes!!</span></p>
+        </div>
+
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="cta_button" onclick="resetSimulation()">Run New Simulation</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Ayawa Sidoinette Sowou and Silja Rós Svansdóttir Þormar</p>
+        <p style="margin-top: 10px; font-size: 0.9em;">Interactive BB84 Quantum Key Distribution Simulation</p>
+    </footer>
+
+    <script>
+        let gameState = {
+            eveActive: null, 
+            eveChosen: false,
+            numPhotons: 3,
+            aliceBits: [],
+            aliceBases: [],
+            bobBases: [],
+            bobMeasurements: [],
+            eveBases: [],
+            eveBits: [],
+            eveBasesEffective: [], 
+            siftedIndices: [],
+            revealedBits: 1,
+            revealedIndices: [], //  Here we store which sifted indices were revealed for testing
+            randomSeed: null // then we store seed for consistent random number generation
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize event listeners
+            document.getElementById('eve_on_btn').addEventListener('click', function() {
+                setEveActive(true);
+            });
+
+            document.getElementById('eve_off_btn').addEventListener('click', function() {
+                setEveActive(false);
+            });
+
+            document.getElementById('num_photons').addEventListener('input', function() {
+                gameState.numPhotons = parseInt(this.value);
+                document.getElementById('photons_value').textContent = this.value;
+                const maxRevealedInput = document.getElementById('max_revealed');
+                const newMax = parseInt(this.value) - 1;
+                maxRevealedInput.max = newMax;
+                if (parseInt(maxRevealedInput.value) > newMax) {
+                    maxRevealedInput.value = newMax;
+                    document.getElementById('revealed_value').textContent = newMax;
+                    gameState.revealedBits = newMax;
+                }
+                updatePhotonCount();
+            });
+
+            document.getElementById('max_revealed').addEventListener('input', function() {
+                gameState.revealedBits = parseInt(this.value);
+                document.getElementById('revealed_value').textContent = this.value;
+            });
+
+            // Initialize with default values
+            document.getElementById('max_revealed').max = 2;
+            updatePhotonCount();
+        });
+
+        function toggleBit(button, index, type) {
+            const currentValue = button.textContent;
+            const newValue = currentValue === '0' ? '1' : '0';
+            button.textContent = newValue;
+            button.classList.toggle('selected');
+        }
+
+        function toggleBasis(button, index, type) {
+            const currentValue = button.textContent;
+            const newValue = currentValue === 'R' ? 'D' : 'R';
+            button.textContent = newValue;
+            button.classList.toggle('selected');
+        }
+
+        function setEveActive(active) {
+            gameState.eveActive = active;
+            gameState.eveChosen = true; 
+            
+            document.getElementById('eve_on_btn').classList.toggle('active', active);
+            document.getElementById('eve_off_btn').classList.toggle('active', !active);
+            
+            if (active) {
+                document.getElementById('eve_off_btn').classList.remove('active');
+            } else {
+                document.getElementById('eve_on_btn').classList.remove('active');
+            }
+            document.getElementById('eve_warning').style.display = 'none';
+        }
+
+        function updateSteps(activeStep) {
+            const steps = ['setup', 'eve', 'sift', 'transmit', 'detect', 'results'];
+            const stepNames = {
+                'setup': 'Setup',
+                'eve': 'Eve\'s Strategy',
+                'sift': 'Sifting',
+                'transmit': 'Transmission',
+                'detect': 'Detection',
+                'results': 'Results'
+            };
+
+            steps.forEach(step => {
+                const element = document.getElementById(`step_${step}`);
+                if (element) {
+                    element.classList.remove('active', 'completed');
+                    if (step === activeStep) {
+                        element.classList.add('active');
+                        element.textContent = stepNames[step];
+                    } else if (steps.indexOf(step) < steps.indexOf(activeStep)) {
+                        element.classList.add('completed');
+                        element.textContent = '✓ ' + stepNames[step];
+                    } else {
+                        element.textContent = stepNames[step];
+                    }
+                }
+            });
+        }
+
+        function goToStep(stepName) {
+            const sectionMap = {
+                'setup': 'game_settings',
+                'eve': 'eve_section',
+                'sift': 'sifting',
+                'transmit': 'transmission_results',
+                'detect': 'detection',
+                'results': 'final_results'
+            };
+
+            Object.values(sectionMap).forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.style.display = 'none';
+                }
+            });
+
+            const targetSection = document.getElementById(sectionMap[stepName]);
+            if (targetSection) {
+                targetSection.style.display = 'block';
+            }
+
+            const steps = ['setup', 'eve', 'sift', 'transmit', 'detect', 'results'];
+            const targetIndex = steps.indexOf(stepName);
+            steps.forEach((step, i) => {
+                const element = document.getElementById(`step_${step}`);
+                if (element) {
+                    element.classList.remove('active', 'completed');
+                    if (i < targetIndex) {
+                        element.classList.add('completed');
+                    } else if (i === targetIndex) {
+                        element.classList.add('active');
+                    }
+                }
+            });
+        }
+
+        function updatePhotonCount() {
+            const numPhotons = gameState.numPhotons;
+            document.getElementById('photon_count').textContent = numPhotons;
+
+            // Update setup table
+            for (let i = 1; i <= 12; i++) {
+                const header = document.getElementById(`photon_${i}`);
+                const cells = document.querySelectorAll(`#setup_table td:nth-child(${i + 1}), #setup_table th:nth-child(${i + 1})`);
+                const display = i <= numPhotons ? 'table-cell' : 'none';
+                if (header) header.style.display = display;
+                cells.forEach(cell => cell.style.display = display);
+            }
+
+            // Update eve table
+            for (let i = 1; i <= 12; i++) {
+                const header = document.getElementById(`eve_photon_${i}`);
+                const cells = document.querySelectorAll(`#eve_table td:nth-child(${i + 1}), #eve_table th:nth-child(${i + 1})`);
+                const display = i <= numPhotons ? 'table-cell' : 'none';
+                if (header) header.style.display = display;
+                cells.forEach(cell => cell.style.display = display);
+            }
+
+            // Update receiving table
+            for (let i = 1; i <= 12; i++) {
+                const header = document.getElementById(`recv_photon_${i}`);
+                const cells = document.querySelectorAll(`#receiving_table td:nth-child(${i + 1}), #receiving_table th:nth-child(${i + 1})`);
+                const display = i <= numPhotons ? 'table-cell' : 'none';
+                if (header) header.style.display = display;
+                cells.forEach(cell => cell.style.display = display);
+            }
+
+            // Update sifting table
+            for (let i = 1; i <= 12; i++) {
+                const header = document.getElementById(`sift_photon_${i}`);
+                const cells = document.querySelectorAll(`#sifting_table tbody tr td:nth-child(${i + 1}), #sifting_table thead th:nth-child(${i + 1})`);
+                const display = i <= numPhotons ? 'table-cell' : 'none';
+                if (header) header.style.display = display;
+                cells.forEach(cell => cell.style.display = display);
+            }
+        }
+
+        function runSimulation() {
+            // Here we check if Eve status has been chosen
+            if (!gameState.eveChosen || gameState.eveActive === null) {
+                alert('Please select Eve\'s status: Choose either EVE ACTIVE or EVE INACTIVE before starting the simulation.');
+                return;
+            }
+            
+            gameState.aliceBits = getTableBits('alice_bits');
+            gameState.aliceBases = getTableBases('alice_bases');
+            gameState.bobBases = getTableBases('bob_bases');
+            gameState.randomSeed = Date.now();
+            console.log('Running simulation with:', gameState);
+            updateSteps('setup');
+
+            if (gameState.eveActive) {
+                document.getElementById('game_settings').style.display = 'none';
+                document.getElementById('eve_section').style.display = 'block';
+                updateSteps('eve');
+            } else {
+                gameState.bobMeasurements = calculateBobMeasurements(gameState.aliceBits, gameState.aliceBases);
+                showTransmissionResults();
+            }
+        }
+
+        function getTableBits(rowId) {
+            const rows = document.querySelectorAll('#setup_table tbody tr');
+            const targetRow = rows[0];
+            if (!targetRow) return [];
+            const buttons = targetRow.querySelectorAll('.bit_button');
+            return Array.from(buttons).slice(0, gameState.numPhotons).map(btn => parseInt(btn.textContent));
+        }
+
+        function seededRandom(seed) {
+            const x = Math.sin(seed) * 10000;
+            const result = x - Math.floor(x);
+            return (typeof result === 'number' && !isNaN(result)) ? result : 0.5;
+        }
+
+        function getConsistentRandom(index, context) {
+            if (!gameState.randomSeed) {
+                gameState.randomSeed = Date.now();
+            }
+            const combinedSeed = gameState.randomSeed + index * 1000 + context * 10000;
+            const randomValue = seededRandom(combinedSeed);
+            return (typeof randomValue === 'number' && !isNaN(randomValue)) ? randomValue : 0.5;
+        }
+
+        function getTableBases(rowId) {
+            const rows = document.querySelectorAll('#setup_table tbody tr');
+            console.log('Table rows found:', rows.length);
+            rows.forEach((row, index) => {
+                const labelCell = row.querySelector('td:first-child');
+                if (labelCell) {
+                    console.log(`Row ${index}: ${labelCell.textContent.trim()}`);
+                }
+            });
+            
+            let targetRow;
+            if (rowId === 'alice_bases') {
+                targetRow = Array.from(rows).find(row => {
+                    const labelCell = row.querySelector('td:first-child');
+                    return labelCell && labelCell.textContent.trim().includes("Alice's bases");
+                });
+            } else if (rowId === 'bob_bases') {
+                targetRow = Array.from(rows).find(row => {
+                    const labelCell = row.querySelector('td:first-child');
+                    return labelCell && labelCell.textContent.trim().includes("Bob's bases");
+                });
+            }
+            
+            if (!targetRow) {
+                console.error(`Could not find row for ${rowId}`);
+                return [];
+            }
+            
+            const buttons = targetRow.querySelectorAll('.basis_button');
+            console.log(`Found ${buttons.length} buttons for ${rowId}`);
+            const result = Array.from(buttons).slice(0, gameState.numPhotons).map(btn => btn.textContent);
+            console.log(`${rowId} bases:`, result);
+            return result;
+        }
+
+        function calculateBobMeasurements(bits, bases) {
+            const measurements = bits.map((bit, i) => {
+                let aliceBasisNum, bobBasisNum;
+                
+                if (typeof bases[i] === 'string') {
+                    aliceBasisNum = bases[i] === 'R' ? 0 : 1;
+                } else {
+                    aliceBasisNum = bases[i];
+                }
+                bobBasisNum = gameState.bobBases[i] === 'R' ? 0 : 1;
+                
+                let result;
+                if (aliceBasisNum === bobBasisNum) {
+                    result = bit;
+                } else {
+                    result = Math.floor(getConsistentRandom(i, 'bob_measurement') * 2);
+                }
+                console.log(`Photon ${i}: Alice basis ${bases[i]} (${aliceBasisNum}), Bob basis ${gameState.bobBases[i]} (${bobBasisNum}), Bit ${bit} -> Bob result ${result}`);
+                return result;
+            });
+            
+            console.log('Bob measurements:', measurements);
+            return measurements;
+        }
+
+        function selectEveBasis(photonIndex, basis) {
+            const allButtonsForPhoton = document.querySelectorAll(`#eve_table tbody tr td:nth-child(${photonIndex + 2}) .basis_button`);
+            allButtonsForPhoton.forEach(btn => btn.classList.remove('selected'));
+            
+            const currentBasis = gameState.eveBases[photonIndex];
+            if (currentBasis === basis) {
+                gameState.eveBases[photonIndex] = undefined;
+            } else {
+                gameState.eveBases[photonIndex] = basis;
+                const rows = document.querySelectorAll('#eve_table tbody tr');
+                const targetRow = rows[basis];
+                const buttons = targetRow.querySelectorAll('td .basis_button');
+                const targetButton = buttons[photonIndex];
+                targetButton.classList.add('selected');
+            }
+        }
+
+        function eveIntercept() {
+            // Here we ensure we have valid data before proceeding
+            if (!gameState.aliceBits || !gameState.aliceBases || !gameState.eveBases) {
+                alert('Error: Invalid simulation data. Please restart the simulation.');
+                return;
+            }
+
+            // Here we determine Eve's effective bases, filling in random choices for any undefined ones.
+            let eveBasesEffective = gameState.eveBases.map((b, i) => {
+                if (b === undefined) {
+                    const randomBasis = Math.floor(getConsistentRandom(i, 'eve_basis') * 2);
+                    console.log(`Photon ${i}: Eve didn't choose basis, assigned random basis: ${randomBasis}`);
+                    return randomBasis;
+                }
+                return b;
+            });
+            
+            gameState.eveBasesEffective = eveBasesEffective;
+            console.log('Eve bases effective:', eveBasesEffective);
+
+            gameState.eveBits = gameState.aliceBits.map((aliceBit, i) => {
+                if (typeof aliceBit !== 'number' || isNaN(aliceBit)) {
+                    console.warn(`Photon ${i}: Invalid Alice bit: ${aliceBit}, using fallback`);
+                    aliceBit = 0;
+                }
+                
+                const eveBasisString = eveBasesEffective[i] === 0 ? 'R' : 'D';
+                const aliceBasisString = gameState.aliceBases[i];
+                
+                let eveBit;
+                if (eveBasisString === aliceBasisString) {
+                    eveBit = aliceBit;
+                    console.log(`Photon ${i}: Correct basis match, Eve gets Alice's bit: ${eveBit}`);
+                } else {
+                    eveBit = Math.floor(getConsistentRandom(i, 'eve_measurement') * 2);
+                    console.log(`Photon ${i}: Wrong basis, Eve gets random bit: ${eveBit}`);
+                }
+                
+                if (typeof eveBit !== 'number' || isNaN(eveBit)) {
+                    eveBit = 0; 
+                    console.warn(`Photon ${i}: Invalid eveBit detected, using fallback: ${eveBit}`);
+                }                
+                return eveBit;
+            });
+            
+            console.log('Eve bits:', gameState.eveBits);
+
+            gameState.bobMeasurements = calculateBobMeasurements(gameState.eveBits, eveBasesEffective);
+            document.getElementById('eve_section').style.display = 'none';
+            document.getElementById('receiving_data').style.display = 'block';
+
+            for (let i = 0; i < gameState.numPhotons; i++) {
+                const bitValue = gameState.eveBits[i];
+                const displayValue = (typeof bitValue === 'number' && !isNaN(bitValue) && (bitValue === 0 || bitValue === 1)) ? bitValue : 0;
+                document.getElementById(`recv_bit_${i + 1}`).textContent = displayValue;
+            }
+        }
+
+        function proceedToSifting() {
+            document.getElementById('receiving_data').style.display = 'none';
+            document.getElementById('sifting').style.display = 'block';
+            updateSteps('sift');
+            createSiftingTable();
+        }
+
+        function showTransmissionResults() {
+            console.log('showTransmissionResults called, eveActive:', gameState.eveActive);
+            
+            document.getElementById('eve_section').style.display = 'none';
+            document.getElementById('transmission_results').style.display = 'block';
+            updateSteps('transmit');
+
+            const eveText = gameState.eveActive ?
+                'Eve intercepted the transmission! Her measurements may have disturbed the quantum states.' :
+                'Since Eve is inactive, the transmission was secure.';
+            document.getElementById('eve_status_text').textContent = eveText;
+
+            console.log('Calling updateTableHeader...');
+            updateTableHeader();
+
+            console.log('Calling createTransmissionTable...');
+            createTransmissionTable();
+        }
+
+        function updateTableHeader() {
+            console.log('updateTableHeader called');
+            const thead = document.querySelector('#transmission_table thead tr');
+            console.log('Table header element found:', thead);
+            
+            if (!thead) {
+                console.log('ERROR: Could not find table header element!');
+                return;
+            }
+            
+            console.log('Clearing existing headers...');
+            while (thead.firstChild) {
+                thead.removeChild(thead.firstChild);
+            }
+            
+            const headers = ['Photon', 'Alice\'s Bit', 'Alice\'s Basis'];
+            
+            if (gameState.eveActive) {
+                headers.push('Eve\'s Bit');
+            }
+            
+            headers.push('Bob\'s Bit', 'Bob\'s Basis', 'Polarization', 'Results');
+            console.log('Building headers array:', headers);
+            
+            headers.forEach(headerText => {
+                const th = document.createElement('th');
+                th.textContent = headerText;
+                thead.appendChild(th);
+            });
+            
+            console.log('Updated table header with columns:', headers);
+        }
+
+        function createTransmissionTable() {
+            console.log('createTransmissionTable called, eveActive:', gameState.eveActive);
+            updateTableHeader();
+            
+            const tbody = document.getElementById('transmission_tbody');
+            while (tbody.firstChild) {
+                tbody.removeChild(tbody.firstChild);
+            }
+
+            for (let i = 0; i < gameState.numPhotons; i++) {
+                const aliceBasis = gameState.aliceBases[i];
+                const aliceBit = gameState.aliceBits[i];
+                const bobBasis = gameState.bobBases[i]; 
+                
+                let bobBit;
+                
+                // we use the pre-calculated bobMeasurements to ensure consistency.
+                bobBit = gameState.bobMeasurements[i];
+
+                // Here we determine polarization based on who sent it
+                let polarization = '';
+                if (gameState.eveActive) {
+                    // When Eve is active, polarization is based on Eve's effective basis and bit
+                    const eveBasisEffective = gameState.eveBasesEffective[i];
+                    const eveBit = gameState.eveBits[i];
+                    if (eveBasisEffective === 0) { 
+                        polarization = eveBit === 0 ? '↔ R' : '↕ R';
+                    } else if (eveBasisEffective === 1) { 
+                        polarization = eveBit === 0 ? '↗ D' : '↖ D';
+                    } else {
+                        if (gameState.aliceBases[i] === 'R') {
+                            polarization = aliceBit === 0 ? '↔ R' : '↕ R';
+                        } else {
+                            polarization = aliceBit === 0 ? '↗ D' : '↖ D';
+                        }
+                    }
+                } else {
+                    // When Eve is inactive, polarization is based on Alice's basis and bit
+                    if (gameState.aliceBases[i] === 'R') {
+                        polarization = aliceBit === 0 ? '↔ R' : '↕ R';
+                    } else { 
+                        polarization = aliceBit === 0 ? '↗ D' : '↖ D';
+                    }
+                }
+
+                // Determine match results, where both basis and bit must match
+                const aliceBasisNum = aliceBasis === 'R' ? 0 : 1;
+                const bobBasisNum = bobBasis === 'R' ? 0 : 1;
+                const basesMatch = aliceBasisNum === bobBasisNum;
+                const bitsMatch = aliceBit === bobBit;
+
+                let result = '';
+                if (basesMatch) {
+                    if (bitsMatch) {
+                        result = '<img src="img/check.png" alt="Match" style="width: 16px; height: 16px; vertical-align: middle;"> match ' + bobBit;
+                    } else {
+                        result = '❌ differ';
+                    }
+                } else {
+                    result = '❌ differ';
+                }
+
+                const row = document.createElement('tr');
+                const photonCell = document.createElement('td');
+                photonCell.textContent = i + 1;
+                row.appendChild(photonCell);
+
+                const aliceBitCell = document.createElement('td');
+                aliceBitCell.textContent = aliceBit;
+                row.appendChild(aliceBitCell);
+
+                const aliceBasisCell = document.createElement('td');
+                aliceBasisCell.textContent = aliceBasis;
+                row.appendChild(aliceBasisCell);
+
+                // Here we add Eve's Bit column, but only if Eve is active
+                if (gameState.eveActive) {
+                    const eveBitCell = document.createElement('td');
+                    eveBitCell.textContent = gameState.eveBits[i];
+                    row.appendChild(eveBitCell);
+                }
+
+                const bobBitCell = document.createElement('td');
+                bobBitCell.textContent = bobBit;
+                row.appendChild(bobBitCell);
+
+                const bobBasisCell = document.createElement('td');
+                bobBasisCell.textContent = bobBasis;
+                row.appendChild(bobBasisCell);
+
+                const polarizationCell = document.createElement('td');
+                polarizationCell.textContent = polarization;
+                row.appendChild(polarizationCell);
+
+                const resultCell = document.createElement('td');
+                resultCell.innerHTML = result;
+                row.appendChild(resultCell);
+
+                tbody.appendChild(row);
+            }
+        }
+
+        function proceedToDetection() {
+            document.getElementById('transmission_results').style.display = 'none';
+            document.getElementById('detection').style.display = 'block';
+            updateSteps('detect');
+
+            gameState.siftedIndices = [];
+            for (let i = 0; i < gameState.numPhotons; i++) {
+                const aliceBasisNum = gameState.aliceBases[i] === 'R' ? 0 : 1;
+                const bobBasisNum = gameState.bobBases[i] === 'R' ? 0 : 1;
+                if (aliceBasisNum === bobBasisNum) {
+                    gameState.siftedIndices.push(i);
+                }
+            }
+
+            // If there are no sifted bits, then we skip the bit selection step
+            if (gameState.siftedIndices.length === 0) {
+                document.getElementById('bit_selection_section').style.display = 'none';
+                document.getElementById('public_comparison_section').style.display = 'none';
+                document.getElementById('detection_results_section').style.display = 'block';
+                document.getElementById('final_key_section').style.display = 'block';
+                document.getElementById('errors_count').textContent = '0';
+                document.getElementById('error_rate_display').textContent = 'N/A, no bits to test';
+                
+                const outcomeDiv = document.getElementById('detection_content');
+                outcomeDiv.innerHTML = `
+                    <h3>No Sifted Key Available</h3>
+                    <p>Alice and Bob have no matching bases, so no sifted key was created.</p>
+                    <p>This means the quantum key distribution failed and Alice and Bob cannot establish a secure key with the current photon settings.</p>
+                    <p><strong>Note:</strong> In BB84, Alice and Bob need matching bases to create a sifted key. With no matches, the protocol fails and they must start over with new photons.</p>
+                `;
+                outcomeDiv.className = 'outcome_message outcome_danger';
+                
+                // Here we plan for the case where Alice and Bob have no matching bases, we store error rate as 0 for consistency and show no secure key.
+                gameState.detectionErrorRate = 0;
+                document.getElementById('final_shared_key_display').textContent = 'No key established due to no matching bases';
+                document.getElementById('final_key_description').textContent = 'Alice and Bob have no sifted bits due to basis mismatches. They cannot establish a secure key and will need to restart the protocol.';
+                
+            } else {
+                const tbody = document.getElementById('bit_selection_tbody');
+                tbody.innerHTML = '';
+                gameState.siftedIndices.forEach((index, siftedIndex) => {
+                    const aliceBit = gameState.aliceBits[index];
+                    const bobBit = gameState.bobMeasurements[index];
+                    
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td><input type="checkbox" class="bit_checkbox" data-index="${siftedIndex}"></td>
+                        <td>${index + 1}</td>
+                        <td>${aliceBit}</td>
+                        <td>${bobBit}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                document.getElementById('sifted_count').textContent = gameState.siftedIndices.length;
+                document.getElementById('reveal_count').textContent = Math.min(gameState.revealedBits, gameState.siftedIndices.length);
+                document.getElementById('bit_selection_section').style.display = 'block';
+                document.getElementById('public_comparison_section').style.display = 'none';
+                document.getElementById('detection_results_section').style.display = 'none';
+                document.getElementById('final_key_section').style.display = 'none';
+            }
+        }
+
+        function showTransmission() {
+            document.getElementById('sifting').style.display = 'none';
+            document.getElementById('transmission_results').style.display = 'block';
+            updateSteps('transmit');
+            
+            const eveText = gameState.eveActive ?
+                'Eve intercepted the transmission! Her measurements may have disturbed the quantum states.' :
+                'Since Eve is inactive, the transmission was secure.';
+            document.getElementById('eve_status_text').textContent = eveText;
+            
+            createTransmissionTable();
+        }
+
+        function createSiftingTable() {
+            const tbody = document.querySelector('#sifting_table tbody');
+            tbody.innerHTML = '';
+
+            let row = document.createElement('tr');
+            row.innerHTML = '<td><strong>Alice\'s bases</strong></td>' + gameState.aliceBases.map(b => `<td>${b}</td>`).join('');
+            tbody.appendChild(row);
+
+            row = document.createElement('tr');
+            row.innerHTML = '<td><strong>Bob\'s bases</strong></td>' + gameState.bobBases.map(b => `<td>${b}</td>`).join('');
+            tbody.appendChild(row);
+
+            row = document.createElement('tr');
+            row.innerHTML = '<td><strong>Match?</strong></td>' + gameState.aliceBases.map((ab, i) => {
+                const aliceBasisNum = ab === 'R' ? 0 : 1;
+                const bobBasisNum = gameState.bobBases[i] === 'R' ? 0 : 1;
+                const match = aliceBasisNum === bobBasisNum;
+                return `<td><span class="status_indicator ${match ? 'status_correct' : 'status_wrong'}">${match ? 'Yes' : 'No'}</span></td>`;
+            }).join('');
+            tbody.appendChild(row);
+
+            if (gameState.eveActive) {
+                row = document.createElement('tr');
+                row.innerHTML = '<td><strong>Eve\'s bases</strong></td>' + gameState.eveBases.map(b => `<td>${b === undefined ? '-' : (b === 0 ? 'R' : 'D')}</td>`).join('');
+                tbody.appendChild(row);
+
+                row = document.createElement('tr');
+                row.innerHTML = '<td><strong>Eve\'s bits</strong></td>' + gameState.eveBits.map(bit => `<td>${bit}</td>`).join('');
+                tbody.appendChild(row);
+            }
+            
+            row = document.createElement('tr');
+            row.innerHTML = '<td><strong>Sifted?</strong></td>' + gameState.aliceBases.map((ab, i) => {
+                const aliceBasisNum = ab === 'R' ? 0 : 1;
+                const bobBasisNum = gameState.bobBases[i] === 'R' ? 0 : 1;
+                const sifted = aliceBasisNum === bobBasisNum;
+                return `<td><span class="status_indicator ${sifted ? 'status_correct' : 'status_sifted'}">${sifted ? 'Sifted' : 'Discarded'}</span></td>`;
+            }).join('');
+            tbody.appendChild(row);
+
+            // Here we create Eve's certainty analysis table if Eve is active.
+            if (gameState.eveActive) {
+                createEveCertaintyTable();
+            }
+        }
+
+        function createEveCertaintyTable() {
+            const certaintySection = document.getElementById('eve_certainty_section');
+            const certaintyTbody = document.getElementById('eve_certainty_tbody');
+            
+            certaintyTbody.innerHTML = '';
+            certaintySection.style.display = 'block';
+            
+            // Here we update the photon count display and headers
+            for (let i = 1; i <= 12; i++) {
+                const header = document.getElementById(`certainty_photon_${i}`);
+                const display = i <= gameState.numPhotons ? 'table-cell' : 'none';
+                if (header) header.style.display = display;
+            }
+            
+            // Create Photon row
+            const photonRow = document.createElement('tr');
+            photonRow.innerHTML = '<td><strong>Photon</strong></td>';
+            for (let i = 0; i < gameState.numPhotons; i++) {
+                const cell = document.createElement('td');
+                cell.textContent = i + 1;
+                photonRow.appendChild(cell);
+            }
+            certaintyTbody.appendChild(photonRow);
+            
+            // Create Eve's bits row
+            const eveBitsRow = document.createElement('tr');
+            eveBitsRow.innerHTML = '<td><strong>Eve\'s bits</strong></td>';
+            for (let i = 0; i < gameState.numPhotons; i++) {
+                const cell = document.createElement('td');
+                cell.textContent = gameState.eveBits[i];
+                eveBitsRow.appendChild(cell);
+            }
+            certaintyTbody.appendChild(eveBitsRow);
+            
+            const qualityRow = document.createElement('tr');
+            qualityRow.innerHTML = '<td><strong>Eve\'s Guess</strong></td>';
+            for (let i = 0; i < gameState.numPhotons; i++) {
+                const cell = document.createElement('td');
+                const eveBasis = gameState.eveBases[i];
+                const aliceBasis = gameState.aliceBases[i];
+                
+                if (eveBasis === undefined) {
+                    cell.innerHTML = '<span class="status_indicator status_sifted">No basis chosen</span>';
+                } else {
+                    // Here we determine if Eve's basis matched Alice's basis
+                    const eveBasisString = eveBasis === 0 ? 'R' : 'D';
+                    const certain = eveBasisString === aliceBasis;
+                    
+                    if (certain) {
+                        cell.innerHTML = '<span class="status_indicator status_correct">Correct basis</span>';
+                    } else {
+                        cell.innerHTML = '<span class="status_indicator status_wrong">Wrong basis</span>';
+                    }
+                }
+                qualityRow.appendChild(cell);
+            }
+            certaintyTbody.appendChild(qualityRow);
+        }
+
+        function revealSelectedBits() {
+            const checkboxes = document.querySelectorAll('.bit_checkbox:checked');
+            const selectedIndices = Array.from(checkboxes).map(cb => parseInt(cb.dataset.index));
+            const maxRevealed = parseInt(document.getElementById('reveal_count').textContent);
+
+            if (selectedIndices.length === 0) {
+                alert('Please select at least one bit to reveal.');
+                return;
+            }
+
+            if (selectedIndices.length > maxRevealed) {
+                alert(`You can only select up to ${maxRevealed} bits for security checking. Please deselect ${selectedIndices.length - maxRevealed} bit(s).`);
+                return;
+            }
+
+            gameState.revealedIndices = selectedIndices.map(siftedIndex => gameState.siftedIndices[siftedIndex]);
+
+            document.getElementById('bit_selection_section').style.display = 'none';
+            document.getElementById('public_comparison_section').style.display = 'block';
+
+            const tbody = document.getElementById('public_comparison_tbody');
+            tbody.innerHTML = '';
+            let errors = 0;
+            selectedIndices.forEach(siftedIndex => {
+                const index = gameState.siftedIndices[siftedIndex];
+                const aliceBit = gameState.aliceBits[index];
+                const bobBit = gameState.bobMeasurements[index];
+                if (aliceBit !== bobBit) errors++;
+
+                const eveBasisEffective = gameState.eveBasesEffective ? gameState.eveBasesEffective[index] : undefined;
+                const eveBasisString = eveBasisEffective === undefined ? '-' : (eveBasisEffective === 0 ? 'R' : 'D');
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${aliceBit}</td>
+                    <td>${bobBit}</td>
+                    <td>${gameState.eveActive ? eveBasisString : '-'}</td>
+                    <td>${gameState.eveActive ? gameState.eveBits[index] : '-'}</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            const errorRate = selectedIndices.length > 0 ? (errors / selectedIndices.length) * 100 : 0;
+            gameState.detectionErrorRate = errorRate;
+
+            document.getElementById('detection_results_section').style.display = 'block';
+            document.getElementById('errors_count').textContent = errors;
+            document.getElementById('error_rate_display').textContent = errorRate.toFixed(1) + '%';
+
+            const outcomeDiv = document.getElementById('detection_content');
+            if (errorRate < 11) {
+                outcomeDiv.innerHTML = `
+                    <h3>No Eavesdropping Detected! The communication is secure and the key is safe!!</h3>
+                    <p>Alice and Bob's bits match perfectly. The quantum channel appears uncompromised.</p>
+                    <p>You were sussessful in your mission!</p>
+
+
+                    <p><strong>Quantum Security:</strong> In BB84, the quantum no-cloning theorem together with the measurement disturbance ensure that eavesdropping can be detected by means of error rates.</p>
+                `;
+                outcomeDiv.className = 'outcome_message outcome_success';
+                showSimpleConfetti();
+            } else {
+                outcomeDiv.innerHTML = '<h3><img src="img/alarm.png" alt="Security Breach, Eavesdropper Detected!" style="width: 24px; height: 24px; vertical-align: middle;"> Security Breach, Eavesdropper Detected!</h3>' +
+                    '<p>Discrepancies found in compared bits. Eavesdropping detected, Eve likely interfered. This key is NOT secure, it has been compromised!!</p>' +
+                    '<p><strong>Quantum Defense:</strong> Any attempt to measure or copy quantum information will inevitably introduces detectable errors, making eavesdropping impossible without detection.</p>';
+                outcomeDiv.className = 'outcome_message outcome_danger';
+            }
+
+            // Here we calculate the final shared key, we will only show if no eavesdropping detected.
+            if (errorRate < 11) {
+                // No eavesdropping detected, so we show the final key
+                const remainingIndices = gameState.siftedIndices.filter((_, i) => !selectedIndices.includes(i));
+                const finalKeyBits = remainingIndices.map(i => gameState.aliceBits[i]);
+                const finalSharedKey = finalKeyBits.join('');
+                document.getElementById('final_shared_key_display').textContent = finalSharedKey || 'No key established';
+                document.getElementById('final_key_description').textContent = 'This is the remaining bits form the secret key that Alice and Bob can use for secure communication.';
+                document.getElementById('final_key_section').style.display = 'block';
+            } else {
+                // Eavesdropping detected, so we do NOT show a final key.
+                document.getElementById('final_shared_key_display').textContent = 'Key discarded - eavesdropping detected';
+                document.getElementById('final_key_description').textContent = 'The key cannot be used due to detected eavesdropping. In the real BB84 protocol, Alice and Bob would discard this entire key and start over.';
+                document.getElementById('final_key_section').style.display = 'block';
+            }
+        }
+
+        function showFinalResults() {
+            document.getElementById('detection').style.display = 'none';
+            document.getElementById('final_results').style.display = 'block';
+            updateSteps('results');
+            createFinalTable();
+        }
+
+        function createFinalTable() {
+            const tbody = document.getElementById('final_tbody');
+            tbody.innerHTML = '';
+            
+            const revealedIndices = gameState.revealedIndices || [];
+            
+            const finalKeyBits = gameState.siftedIndices
+                .filter(index => !revealedIndices.includes(index))
+                .map(index => gameState.aliceBits[index]);
+
+            const finalKey = finalKeyBits.join('');
+            const errorRate = gameState.detectionErrorRate || 0;
+            const keySuccess = finalKey && errorRate < 11; // Only successful if no eavesdropping detected
+            document.getElementById('final_key_display').textContent = keySuccess ? finalKey : 'No secure key established';
+            document.getElementById('key_success').textContent = keySuccess ? 'Yes' : 'No';
+
+            const tableData = [];
+
+            const aliceKeyRow = ['Alice\'s Key'];
+            for (let i = 0; i < gameState.numPhotons; i++) {
+                aliceKeyRow.push(gameState.aliceBits[i]);
+            }
+            tableData.push(aliceKeyRow);
+
+            const aliceBasisRow = ['Alice\'s Basis'];
+            for (let i = 0; i < gameState.numPhotons; i++) {
+                aliceBasisRow.push(gameState.aliceBases[i]);
+            }
+            tableData.push(aliceBasisRow);
+
+            if (gameState.eveActive) {
+                const eveBasisRow = ['Eve\'s Basis'];
+                for (let i = 0; i < gameState.numPhotons; i++) {
+                    eveBasisRow.push(gameState.eveBases[i] === undefined ? '-' : (gameState.eveBases[i] === 0 ? 'R' : 'D'));
+                }
+                tableData.push(eveBasisRow);
+
+                const eveKeyRow = ['Eve\'s Key'];
+                for (let i = 0; i < gameState.numPhotons; i++) {
+                    eveKeyRow.push(gameState.eveBits[i]);
+                }
+                tableData.push(eveKeyRow);
+            }
+
+            const bobBasisRow = ['Bob\'s Basis'];
+            for (let i = 0; i < gameState.numPhotons; i++) {
+                bobBasisRow.push(gameState.bobBases[i]);
+            }
+            tableData.push(bobBasisRow);
+
+            const bobKeyRow = ['Bob\'s Key'];
+            for (let i = 0; i < gameState.numPhotons; i++) {
+                bobKeyRow.push(gameState.bobMeasurements[i]);
+            }
+            tableData.push(bobKeyRow);
+
+            const statusRow = ['Final Status'];
+            for (let i = 0; i < gameState.numPhotons; i++) {
+                const sifted = gameState.aliceBases[i] === gameState.bobBases[i];
+                let status = 'Discarded';
+                if (sifted) {
+                    if (revealedIndices.includes(i)) {
+                        status = 'Revealed for testing';
+                    } else {
+                        status = 'Used in final key';
+                    }
+                }
+                statusRow.push(status);
+            }
+            tableData.push(statusRow);
+
+            tableData.forEach(rowData => {
+                const row = document.createElement('tr');
+                rowData.forEach((cellData, index) => {
+                    const cell = document.createElement('td');
+                    if (index === 0) {
+                        cell.innerHTML = `<strong>${cellData}</strong>`;
+                    } else if (rowData[0] === 'Final Status' && (cellData === 'Used in final key' || cellData === 'Revealed for testing' || cellData === 'Discarded')) {
+                        const sifted = cellData !== 'Discarded';
+                        cell.innerHTML = `<span class="status_indicator ${sifted ? 'status_correct' : 'status_sifted'}">${cellData}</span>`;
+                    } else {
+                        cell.textContent = cellData;
+                    }
+                    row.appendChild(cell);
+                });
+                tbody.appendChild(row);
+            });
+        }
+        
+        function resetSimulation() {
+            gameState = {
+                eveActive: null,
+                eveChosen: false,
+                numPhotons: 3,
+                aliceBits: [],
+                aliceBases: [],
+                bobBases: [],
+                bobMeasurements: [],
+                eveBases: [],
+                eveBits: [],
+                eveBasesEffective: [],
+                siftedIndices: [],
+                revealedBits: 1,
+                revealedIndices: [],
+                randomSeed: null,
+                detectionErrorRate: 0
+            };
+
+            document.getElementById('eve_on_btn').classList.remove('active');
+            document.getElementById('eve_off_btn').classList.remove('active');
+            document.getElementById('eve_warning').style.display = 'block';
+            
+            document.getElementById('num_photons').value = 3;
+            document.getElementById('photons_value').textContent = '3';
+            document.getElementById('max_revealed').max = 2;
+            document.getElementById('max_revealed').value = 1;
+            document.getElementById('revealed_value').textContent = '1';
+
+            const bitButtons = document.querySelectorAll('.bit_button');
+            bitButtons.forEach(btn => {
+                btn.textContent = '0';
+                btn.classList.remove('selected');
+            });
+
+            const basisButtons = document.querySelectorAll('.basis_button');
+            basisButtons.forEach(btn => {
+                btn.textContent = 'R';
+                btn.classList.remove('selected');
+            });
+
+            document.getElementById('eve_section').style.display = 'none';
+            document.getElementById('receiving_data').style.display = 'none';
+            document.getElementById('sifting').style.display = 'none';
+            document.getElementById('transmission_results').style.display = 'none';
+            document.getElementById('detection').style.display = 'none';
+            document.getElementById('final_results').style.display = 'none';
+            document.getElementById('outcome_message').style.display = 'none';
+            document.getElementById('game_settings').style.display = 'block';
+            updateSteps('setup');
+        }
+
+        function showSimpleConfetti() {
+            const colors = ['#00f5ff', '#2563eb', '#3b82f6', '#60a5fa', '#93c5fd'];
+            const confettiContainer = document.createElement('div');
+            confettiContainer.style.position = 'fixed';
+            confettiContainer.style.top = '0';
+            confettiContainer.style.left = '0';
+            confettiContainer.style.width = '100%';
+            confettiContainer.style.height = '100%';
+            confettiContainer.style.pointerEvents = 'none';
+            confettiContainer.style.zIndex = '9999';
+            
+            for (let i = 0; i < 50; i++) {
+                const confettiPiece = document.createElement('div');
+                confettiPiece.style.position = 'absolute';
+                confettiPiece.style.width = '10px';
+                confettiPiece.style.height = '10px';
+                confettiPiece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confettiPiece.style.left = Math.random() * 100 + '%';
+                confettiPiece.style.top = '-10px';
+                confettiPiece.style.animation = `confettiFall ${Math.random() * 2 + 2}s linear forwards`;
+                confettiContainer.appendChild(confettiPiece);
+            }
+            
+            document.body.appendChild(confettiContainer);
+            
+            setTimeout(() => {
+                document.body.removeChild(confettiContainer);
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
