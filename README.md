@@ -1,4 +1,4 @@
-# BB84 Quantum Key Distribution Protocol
+# Simulation and Evaluation of the BB84 Quantum Key Distribution Protocol
 
 ## Group Members
 - Silja Rós Svansdóttir Þormar (srs60@hi.is)
