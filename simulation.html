@@ -35,7 +35,6 @@
         <div class="eve_instruction">Choose Eve's status:</div>
         <button class="eve_on" id="eve_on_btn">EVE ACTIVE 🟢</button>
         <button class="eve_off" id="eve_off_btn">EVE INACTIVE 🔴</button>
-        <div class="eve_warning" id="eve_warning" style="display: none;">⚠️ Please select Eve's status to start simulation</div>
     </div>
 
     <div class="step_indicator">
@@ -574,7 +573,6 @@
             } else {
                 document.getElementById('eve_on_btn').classList.remove('active');
             }
-            document.getElementById('eve_warning').style.display = 'none';
         }
 
         function updateSteps(activeStep) {
@@ -1411,7 +1409,6 @@
 
             document.getElementById('eve_on_btn').classList.remove('active');
             document.getElementById('eve_off_btn').classList.remove('active');
-            document.getElementById('eve_warning').style.display = 'block';
             
             document.getElementById('num_photons').value = 3;
             document.getElementById('photons_value').textContent = '3';
